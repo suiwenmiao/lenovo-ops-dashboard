@@ -261,61 +261,60 @@ function buildShangou() {
   }));
   const byKeng = (d.by_keng || []).map(x => ({ name: x.name, ctr: x.点击率, uvCtr: x.UV点击率, reach: x.到达率, jump: x.二跳率, interest: x.消费者兴趣人数, imp: x.曝光量, clk: x.点击量 }));
 
-  // 素材画廊：带图/视频。图片取 _img.images[0]；视频按"尾缀创意名"匹配
-  // （by_creative 数组序 ≠ 图片序号，绝不能按序号推断；且视频清单要从源目录读，不能读产物目录）
+  // 素材画廊：图片/视频按「创意名」匹配产物目录里的素材文件。
+  // ⚠ 源数据的 _img 字段实测恒为 null（管线未回填），不能依赖它——否则整柜素材显示「无图」。
+  // 素材文件名形如 NN_4_闪购<创意名>.jpg / NN_v_闪购<创意名>.mp4；NN 序号每次重跑都会变，故只按去掉前缀的名字匹配。
   const SG_ASSET = 'assets/shangou/';
-  // 管线每次重跑会给同一创意换序号（内容不变，仅 NN 前缀变），所以这里按「序号后后缀」做一层解析：
-  // 产物目录里已有同名文件就直接用；没有但存在同创意的文件（内容一致）就复用，避免出现死链。
-  const availExact = {}, availSig = {};
+  const imgByName = {}, imgByNameCI = {}, vidByName = {}, vidByNameCI = {};
   try {
     fs.readdirSync(OUT + '/assets/shangou').forEach(f => {
-      availExact[f] = 1;
-      const m = f.match(/^\d+_([4v])_(.+)$/);
-      if (m) availSig[m[1] + '_' + m[2]] = f;
+      let m = f.match(/^\d+_4_(闪购.+)\.(?:jpe?g|png|webp)$/i);
+      if (m) { const k = m[1], lk = k.toLowerCase(); if (!imgByName[k]) imgByName[k] = f; if (!imgByNameCI[lk]) imgByNameCI[lk] = f; return; }
+      m = f.match(/^\d+_v_(闪购.+)\.mp4$/i);
+      if (m) { const k = m[1], lk = k.toLowerCase(); if (!vidByName[k]) vidByName[k] = f; if (!vidByNameCI[lk]) vidByNameCI[lk] = f; }
     });
   } catch (e) {}
-  const resolvedLog = [];
-  function resolveAsset(name) {
-    if (!name) return '';
-    if (availExact[name]) return name;
-    const m = name.match(/^\d+_([4v])_(.+)$/);
-    const hit = m ? availSig[m[1] + '_' + m[2]] : null;
-    if (hit) { resolvedLog.push(name + ' -> ' + hit); return hit; }
-    return name;
+
+  // 创意名自带结构化信息：闪购<坑位>_<品类码>_<产品>。
+  // 源数据的 坑位/品类/产品 三列常为空，导致画廊筛选与徽标失效——这里从名字解析补齐（有值则优先用原值）。
+  const PIN_TEXT = { NB: '笔记本NB', PAD: '平板PAD', 选件: '选件' };
+  function parseCreativeName(n) {
+    const s = String(n || '');
+    const seg = s.split('_');
+    const keng = s.indexOf('双坑') >= 0 ? '双坑' : (s.indexOf('单坑') >= 0 ? '单坑' : '');
+    const code = seg.length > 1 ? seg[1] : '';
+    return { keng: keng, pin: PIN_TEXT[code] || code, product: seg.length > 2 ? seg.slice(2).join('_') : '' };
   }
-  const videoSigs = {};
-  try {
-    fs.readdirSync(SG_VID_DIR).forEach(f => {
-      const mm = f.match(/_v_闪购(.+)\.mp4$/);
-      if (mm) videoSigs[mm[1]] = resolveAsset(f);
-    });
-  } catch (e) {}
   const byCreative = (d.by_creative || []).map(x => {
-    const rawImg = (x._img && x._img.images && x._img.images[0]) || '';
-    const img = resolveAsset(rawImg);
-    const imgPath = img ? SG_ASSET + img : '';
-    let vidFile = '';
-    const im = img.match(/_4_闪购(.+)\.jpg$/);
-    if (im && videoSigs[im[1]]) vidFile = videoSigs[im[1]];
+    const nm = String(x.name || ''), lk = nm.toLowerCase();
+    const imgFile = imgByName[nm] || imgByNameCI[lk] || '';
+    const vidFile = vidByName[nm] || vidByNameCI[lk] || '';
+    const pn = parseCreativeName(nm);
     return {
       name: x.name, imp: x.曝光量, clk: x.点击量, ctr: x.点击率, uvCtr: x.UV点击率,
       reach: x.到达率, jump: x.二跳率, brandSearch: x.品牌回搜率_uv, brandReturn: x.品牌回访率_uv,
-      interest: x.消费者兴趣人数, keng: x.坑位, pin: x.品类, product: x.产品,
-      type: x.创意类型, link: x.素材地址, img: imgPath, video: vidFile ? SG_ASSET + vidFile : ''
+      interest: x.消费者兴趣人数,
+      keng: x.坑位 || pn.keng, pin: x.品类 || pn.pin, product: x.产品 || pn.product,
+      type: x.创意类型, link: x.素材地址, img: imgFile ? SG_ASSET + imgFile : '', video: vidFile ? SG_ASSET + vidFile : ''
     };
   });
-  if (resolvedLog.length) console.log('  ⚠ 素材按创意名复用了已有文件 ' + resolvedLog.length + ' 个（序号变动，内容一致）：');
-  resolvedLog.slice(0, 5).forEach(s => console.log('      ' + s));
+  {
+    const nImg = byCreative.filter(c => c.img).length, nVid = byCreative.filter(c => c.video).length;
+    console.log('  素材匹配：img ' + nImg + '/' + byCreative.length + ' · video ' + nVid + '/' + byCreative.length);
+  }
   const byPin = (d.by_pin || []).map(x => ({ name: x.name, imp: x.曝光量, clk: x.点击量, ctr: x.点击率, interest: x.消费者兴趣人数 }));
   const byPlan = (d.by_plan || []).map(x => ({ name: x.name, imp: x.曝光量, clk: x.点击量, ctr: x.点击率 }));
   const byUnit = (d.by_unit || []).map(x => ({ name: x.name, imp: x.曝光量, clk: x.点击量, ctr: x.点击率 }));
   const byAudience = (d.by_audience || []).map(x => ({ name: x.name, imp: x.曝光量, clk: x.点击量, ctr: x.点击率, interest: x.消费者兴趣人数 }));
   const opt = d.optimization || {};
-  const lowCtr = (opt.low_ctr || []).map(x => ({
-    name: x.name, keng: x.坑位, pin: x.品类, product: x.产品,
-    imp: x.曝光量, clk: x.点击量, ctr: x.点击率, link: x.素材地址,
-    extraAvg: x.extra_to_avg, extraBench: x.extra_to_bench
-  }));
+  const lowCtr = (opt.low_ctr || []).map(x => {
+    const pn = parseCreativeName(x.name);
+    return {
+      name: x.name, keng: x.坑位 || pn.keng, pin: x.品类 || pn.pin, product: x.产品 || pn.product,
+      imp: x.曝光量, clk: x.点击量, ctr: x.点击率, link: x.素材地址,
+      extraAvg: x.extra_to_avg, extraBench: x.extra_to_bench
+    };
+  });
 
   return {
     updatedAt: new Date().toISOString().slice(0, 10),

@@ -356,6 +356,18 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1
 .pz-section h3 .bar{width:3px;height:14px;background:var(--brand);border-radius:2px}
 @media(max-width:980px){.pz-cards{grid-template-columns:repeat(2,1fr);gap:10px}}
 @media(max-width:640px){.pz-cards{grid-template-columns:1fr 1fr;gap:8px}.pz-card{padding:11px 12px;min-height:86px}.pz-card .val{font-size:18px}}
+.pz-card{transition:box-shadow .18s ease,transform .18s ease}
+.pz-card:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+
+/* ---------- 提示条 / 状态药丸（品专 · 闪购共用） ---------- */
+.hint-note{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 15px;font-size:12.5px;color:#92400e;line-height:1.8;margin-bottom:18px}
+.hint-note b{color:#78350f;font-weight:800}
+.hint-note .hn-t{font-weight:800;color:#78350f;margin-right:6px}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 10px;border-radius:999px;white-space:nowrap;line-height:1.65}
+.pill.ok{background:var(--ok-50);color:var(--ok)}
+.pill.bad{background:var(--bad-50);color:var(--bad)}
+.pill.neu{background:var(--surface-2);color:var(--muted)}
+.pill.brand{background:var(--brand-50);color:var(--brand)}
 
 /* 闪购素材筛选栏 */
 .sg-filter{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:14px 16px 2px}
@@ -582,9 +594,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1
         <div class="sec-title"><h2>品专看板（品牌专区 点击率）</h2><span class="sec-src" id="src-pinzuan"></span></div>
         <a class="ghost-btn" href="file:///C:/Users/李一诺/WorkBuddy/2026-08-07-10-12-57/品牌专区_点击率日追踪.html" target="_blank">查看原看板 ↗</a>
       </div>
-      <div class="desc">口径：点击率=点击量÷展现量（展现量加权）｜目标=2026全年同比+1%为正；下半年加权需达 <b id="pzH2Target">40.08%</b>；11月大促单独抬至 42% 峰值。</div>
-
       <div class="pz-cards" id="pzCards"></div>
+
+      <div class="hint-note"><span class="hn-t">口径</span>点击率＝点击量÷展现量（展现量加权）｜目标＝2026 全年同比 +1% 为正；下半年加权需达 <b id="pzH2Target">40.08%</b>；11 月大促单独抬至 <b>42%</b> 峰值。</div>
 
       <div class="pz-section">
         <h3><span class="bar"></span>月度点击率对比（2025 vs 2026 实际/目标）</h3>
@@ -592,14 +604,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1
       </div>
 
       <div class="pz-section">
-        <h3><span class="bar"></span>点击率日趋势</h3>
-        <div class="pz-legend" id="pzLegend"></div>
-        <div class="canvas-box" style="height:320px"><canvas id="pzTrend"></canvas></div>
+        <h3><span class="bar"></span>创意明细（最新一天：<span id="pzCreDate">—</span> · 点击率 ≥ <span id="pzCreBench">39.69%</span> 达标）</h3>
+        <div class="tbl-scroll" style="max-height:420px"><table class="tbl"><thead><tr><th>创意ID</th><th>创意名称</th><th class="num">展现量</th><th class="num">点击量</th><th class="num">点击率</th><th>展现占比</th></tr></thead><tbody id="tbl-creatives"></tbody></table></div>
       </div>
 
       <div class="pz-section">
-        <h3><span class="bar"></span>创意明细（最新一天：<span id="pzCreDate">—</span> · 点击率 ≥ <span id="pzCreBench">39.69%</span> 达标）</h3>
-        <div class="tbl-scroll" style="max-height:420px"><table class="tbl"><thead><tr><th>创意ID</th><th>创意名称</th><th class="num">展现量</th><th class="num">点击量</th><th class="num">点击率</th><th>展现占比</th></tr></thead><tbody id="tbl-creatives"></tbody></table></div>
+        <h3><span class="bar"></span>点击率日趋势</h3>
+        <div class="pz-legend" id="pzLegend"></div>
+        <div class="canvas-box" style="height:320px"><canvas id="pzTrend"></canvas></div>
       </div>
 
       <div class="pz-section">
@@ -614,12 +626,13 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1
         <div class="sec-title"><h2>品牌闪购看板（万相台 闪购）</h2><span class="sec-src" id="src-shangou"></span></div>
         <a class="ghost-btn" href="file:///C:/Users/李一诺/WorkBuddy/2026-09-09-09-59-47/index.html" target="_blank">查看原看板 ↗</a>
       </div>
+      <div class="hint-note"><span class="hn-t">说明</span>数据来自万相台「订单结案报表」；CTR＝点击量÷曝光量，均为区间累计口径。素材画廊为当日在投创意的真实素材，右上角标注点击率，下方为坑位 / 品类 / 产品标签。</div>
       <div class="meta-bar" id="sgMeta"></div>
       <div class="kpis" id="kpi-shangou"></div>
       <div class="grid2">
         <div class="panel"><h3><span class="bar"></span>整体日点击率趋势（整体 / 单坑 / 双坑）</h3><div class="canvas-box"><canvas id="sgTrend"></canvas></div></div>
         <div class="panel"><h3><span class="bar"></span>按坑位 CTR 对比</h3><div class="canvas-box"><canvas id="sgKeng"></canvas></div>
-          <div class="legend-note">双坑 CTR 约为单坑的 1.6 倍，但 CPM 翻倍，单位点击成本更高。</div></div>
+          <div class="insight" id="sgKengInsight" style="margin-top:12px"></div></div>
       </div>
       <div class="tbl-wrap"><div class="tbl-cap"><span class="bar"></span>单坑 vs 双坑 对比</div><div class="tbl-scroll"><table class="tbl"><thead><tr><th>坑位</th><th class="num">曝光量</th><th class="num">点击量</th><th class="num">CTR</th><th class="num">UV点击率</th><th class="num">到达率</th><th class="num">二跳率</th><th class="num">消费者兴趣人数</th></tr></thead><tbody id="tbl-keng"></tbody></table></div></div>
 
@@ -1403,7 +1416,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1
         '<td class="num">'+r.y2025.toFixed(2)+'%</td>'+
         '<td class="num">'+r.y2026.toFixed(2)+'% '+tag+'</td>'+
         '<td class="num '+(r.gap>=0?'ok':'bad')+'">'+(r.gap>=0?'+':'')+r.gap.toFixed(2)+'pp</td>'+
-        '<td><span class="'+cls+'">'+r.status+'</span></td></tr>';
+        '<td><span class="pill '+cls+'">'+r.status+'</span></td></tr>';
     }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--faint);padding:24px">暂无年度对比数据</td></tr>';
 
     // 点击率日趋势：参考线插件 + 事件红点
@@ -1484,7 +1497,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1
       return '<tr><td class="lead">'+esc(e.date)+'</td>'+
         '<td>'+esc(e.event)+'</td>'+
         '<td class="num">'+(e.ctr!=null?e.ctr.toFixed(2)+'%':'—')+'</td>'+
-        '<td><span class="'+cls+'">'+(e.status||'—')+'</span></td></tr>';
+        '<td><span class="pill '+cls+'">'+(e.status||'—')+'</span></td></tr>';
     }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--faint);padding:24px">暂无业务事件记录</td></tr>';
   }
 
@@ -1531,6 +1544,18 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1
     o2.scales.y = { title:{display:true,text:'CTR(%)',font:{size:11}}, grid:{color:C.grid}, ticks:{font:{size:11},color:'#94a3b8',callback:function(v){return v+'%';}} };
     draw('sgKeng', { type:'bar', data:{ labels:SG.byKeng.map(function(x){return x.name;}),
       datasets:[{ label:'CTR', data:SG.byKeng.map(function(x){return Math.round(x.ctr*10000)/100;}), backgroundColor:SG.byKeng.map(function(x){return x.name==='双坑'?C.brand:C.slate;}), borderRadius:6 }] }, options:o2 });
+
+    // 坑位洞察（动态）
+    (function(){
+      var dk = SG.byKeng.filter(function(x){return x.name==='单坑';})[0] || {};
+      var sk = SG.byKeng.filter(function(x){return x.name==='双坑';})[0] || {};
+      var ratio = dk.ctr ? (sk.ctr/dk.ctr) : 0;
+      var totImp = (dk.imp||0)+(sk.imp||0);
+      var share = totImp ? (dk.imp/totImp*100) : 0;
+      var el = $('sgKengInsight');
+      if(el) el.innerHTML = '分坑位看，双坑 CTR 是单坑的 <b>'+ratio.toFixed(2)+'×</b>，但双坑 CPM 约为单坑 2 倍，单位点击成本更高；'+
+        '单坑占了 <b>'+share.toFixed(1)+'%</b> 的曝光，是拉低整体 CTR 的主因。提升整体 CTR 的杠杆在于：把高曝光、低 CTR 的单坑素材向双坑结构迁移。';
+    })();
 
     // 单坑 vs 双坑 对比表
     $('tbl-keng').innerHTML = SG.byKeng.map(function(x){
