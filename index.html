@@ -1040,7 +1040,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1
   }
 
   function renderHongmao(){
-    var catTabs = HM.cats.concat([{key:'sum', name:'汇总'}]);
+    var catTabs = HM.cats;
     $('hmCats').innerHTML = catTabs.map(function(c){
       return '<button class="hm-tab'+(c.key===state.hmCat?' active':'')+'" data-cat="'+c.key+'">'+c.name+'</button>';
     }).join('');
