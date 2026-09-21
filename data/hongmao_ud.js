@@ -1,6 +1,6 @@
 window.DASH = window.DASH || {};
 window.DASH.hongmaoUd = {
- "updatedAt":"2026-09-20 18:54",
+ "updatedAt":"2026-09-21 10:04",
  "cols":[{"key":"spend","label":"花费","src":"ud","fmt":"money"},{"key":"imp","label":"曝光量","src":"ud","fmt":"int"},{"key":"clk","label":"点击量","src":"ud","fmt":"int"},{"key":"ctr","label":"点击率","src":"ud","fmt":"pct"},{"key":"conv_n","label":"总成交笔数","src":"ud","fmt":"int"},{"key":"conv_gmv","label":"总成交金额","src":"ud","fmt":"money"},{"key":"cpm","label":"CPM","src":"ud","fmt":"money2"},{"key":"cpc","label":"CPC","src":"ud","fmt":"money2"},{"key":"conv_roi","label":"总成交ROI","src":"ud","fmt":"roi"},{"key":"net_gmv","label":"剔退GMV","src":"ud","fmt":"money"},{"key":"net_roi","label":"剔退ROI","src":"ud","fmt":"roi"},{"key":"dir_n","label":"直接成交笔数","src":"ud","fmt":"int"},{"key":"dir_gmv","label":"直接成交金额","src":"ud","fmt":"money"},{"key":"dir_roi","label":"直接成交ROI","src":"ud","fmt":"roi"},{"key":"ind_n","label":"间接成交笔数","src":"ud","fmt":"int"},{"key":"ind_gmv","label":"间接成交金额","src":"ud","fmt":"money"},{"key":"ind_roi","label":"间接成交ROI","src":"ud","fmt":"roi"},{"key":"ref_n","label":"总退款笔数","src":"ud","fmt":"int"},{"key":"ref_amt","label":"总退款金额","src":"ud","fmt":"money"},{"key":"ref_rate","label":"总退款率","src":"ud","fmt":"pct"},{"key":"visit","label":"店铺访问量","src":"jg","fmt":"int"},{"key":"vcost","label":"访问成本","src":"jg","fmt":"money2"}],
  "periods":{
   "nb_0621":{"label":"笔记本 6.8-6.21","jgT":[100213.83,27289.0],

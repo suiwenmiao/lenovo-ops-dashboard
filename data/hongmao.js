@@ -1,6 +1,6 @@
 window.DASH = window.DASH || {};
 window.DASH.hongmao = {
-  "updatedAt": "2026-09-20",
+  "updatedAt": "2026-09-21",
   "source": "投放看板_联世_火奴.html (MODELS)",
   "totals": {
     "spend": 322650,
