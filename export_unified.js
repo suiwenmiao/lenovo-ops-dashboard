@@ -173,7 +173,7 @@ function buildPinzuan() {
       date: p[cols.date], imp: +p[cols.imp], clk: +p[cols.clk], ctr: +p[cols.ctr],
       month: +p[cols.month], target: +p[cols.target], gap: +p[cols.gap], status: p[cols.status], src: p[cols.src]
     };
-  });
+  }).sort((a, b) => a.date.localeCompare(b.date));
   const latest = records[records.length - 1];
   let sumImp = 0, sumClk = 0; records.forEach(r => { sumImp += r.imp; sumClk += r.clk; });
   const avgCtr = sumImp ? r2(sumClk / sumImp * 100) : 0;
@@ -235,7 +235,7 @@ function buildPinzuan() {
 
 // =================== 3. 闪购 (dashboard_data.json 全量) ===================
 function buildShangou() {
-  const d = JSON.parse(fs.readFileSync(SG_ROOT + '/dashboard_data.json', 'utf8'));
+  const d = JSON.parse(fs.readFileSync(OUT + '/dashboard_data_new.json', 'utf8'));
   const meta = d.meta || {};
   const overall = d.overall || {};
   const daily = (d.daily || []).map(x => ({
