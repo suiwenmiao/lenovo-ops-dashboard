@@ -225,10 +225,26 @@ function buildPinzuan() {
     e.status = rec ? rec.status : null;
   });
 
+  // 与原看板卡片对齐的衍生指标
+  const extractCard = (label) => {
+    const re = new RegExp(label + '[\\s\\S]*?<div class=["\']card-val["\']>([\\d.]+)%');
+    const m = html.match(re);
+    return m ? parseFloat(m[1]) : null;
+  };
+  // 2026 已发生月份（1-7 月）加权 CTR，作为卡片回退
+  let y2026OccurredImp = 0, y2026OccurredClk = 0;
+  records.forEach(r => { if (r.month <= 7) { y2026OccurredImp += r.imp; y2026OccurredClk += r.clk; } });
+  const y2026OccurredFallback = y2026OccurredImp ? r2(y2026OccurredClk / y2026OccurredImp * 100) : 0;
+  // 下半年目标（同比+1% / 下半年加权需达）
+  const y2025Avg = extractCard('2025全年点击率') || (annual.length ? r2(annual.reduce((a, b) => a + b.y2025, 0) / annual.length) : 0);
+  const h2Target = extractCard('下半年需达') || 40.08;
+  const y2026Occurred = extractCard('2026已发生') || y2026OccurredFallback;
+
   return {
     updatedAt: new Date().toISOString().slice(0, 10),
     source: '品牌专区_点击率日追踪.csv + 年度对比 + 创意明细 + 业务事件',
     latest, avgCtr, sumImp, sumClk,
+    y2025Avg, y2026Occurred, h2Target,
     records, months, annual, creatives, events
   };
 }
