@@ -10,3 +10,6 @@ data/hongmao_ud_report.txt
 
 # 打包产物
 *.zip
+
+# 中间产物（万相台 xlsx → 看板 JSON 的临时文件）
+dashboard_data_new.json
